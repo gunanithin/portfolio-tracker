@@ -18,7 +18,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { ArrowUpRight, TrendingUp, Shield, Wallet } from 'lucide-react';
+import { ArrowUpRight, TrendingUp, Shield, Wallet, Eye, EyeOff } from 'lucide-react';
 
 ChartJS.register(
   CategoryScale,
@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [snapshots, setSnapshots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchingPrices, setFetchingPrices] = useState(false);
+  const [showFigures, setShowFigures] = useState(false);
 
   useEffect(() => {
     if (!currentUser || !vaultPin) return;
@@ -132,7 +133,7 @@ const Dashboard = () => {
 
   const allocationLabels = Object.keys(allocation).map(key => {
     const percentage = totalNetWorth > 0 ? ((allocation[key] / totalNetWorth) * 100).toFixed(1) : 0;
-    return `${key} (${percentage}%)`;
+    return `${key} (${showFigures ? percentage : '**.*'}%)`;
   });
   const allocationValues = Object.values(allocation);
 
@@ -186,6 +187,22 @@ const Dashboard = () => {
             weight: '500'
           }
         }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null && context.parsed.y !== undefined) {
+              label += showFigures ? formatCurrency(context.parsed.y) : '********';
+            } else if (context.parsed !== null) {
+              label += showFigures ? formatCurrency(context.parsed) : '********';
+            }
+            return label;
+          }
+        }
       }
     },
     scales: {
@@ -194,7 +211,10 @@ const Dashboard = () => {
           color: 'rgba(148, 163, 184, 0.1)',
         },
         ticks: {
-          color: '#94a3b8'
+          color: '#94a3b8',
+          callback: function(value) {
+            return showFigures ? formatCurrency(value) : '***';
+          }
         }
       },
       x: {
@@ -229,13 +249,18 @@ const Dashboard = () => {
               <Wallet size={24} color="#38bdf8" />
             </div>
             <div>
-              <p className="text-muted">Total Net Worth {fetchingPrices && <span style={{fontSize:'0.6rem', color:'var(--accent)'}}> (Live Syncing...)</span>}</p>
-              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : formatCurrency(totalNetWorth)}</h2>
+              <div className="flex items-center gap-2">
+                <p className="text-muted">Total Net Worth {fetchingPrices && <span style={{fontSize:'0.6rem', color:'var(--accent)'}}> (Live Syncing...)</span>}</p>
+                <button onClick={() => setShowFigures(!showFigures)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex' }} title="Toggle visibility">
+                  {showFigures ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : showFigures ? formatCurrency(totalNetWorth) : '********'}</h2>
             </div>
           </div>
           <p style={{ color: totalProfit >= 0 ? 'var(--success)' : 'var(--danger)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
             {totalProfit >= 0 ? <TrendingUp size={16} /> : <TrendingUp size={16} style={{transform: 'rotate(180deg)'}} />} 
-            <span>All-Time Returns: {totalProfit >= 0 ? '+' : ''}{formatCurrency(totalProfit)} ({profitPercentage.toFixed(2)}%)</span>
+            <span>All-Time Returns: {showFigures ? `${totalProfit >= 0 ? '+' : ''}${formatCurrency(totalProfit)} (${profitPercentage.toFixed(2)}%)` : '********'}</span>
           </p>
         </div>
 
@@ -246,7 +271,7 @@ const Dashboard = () => {
             </div>
             <div>
               <p className="text-muted">Total Assets</p>
-              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : investments.length}</h2>
+              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : showFigures ? investments.length : '***'}</h2>
             </div>
           </div>
           <p className="text-muted" style={{ fontSize: '0.9rem' }}>
@@ -261,7 +286,7 @@ const Dashboard = () => {
             </div>
             <div>
               <p className="text-muted">Insurance Cover</p>
-              <h2 style={{ fontSize: '1.8rem' }}>₹ 1.5 Cr</h2>
+              <h2 style={{ fontSize: '1.8rem' }}>{showFigures ? '₹ 1.5 Cr' : '********'}</h2>
             </div>
           </div>
           <p className="text-muted" style={{ fontSize: '0.9rem' }}>
