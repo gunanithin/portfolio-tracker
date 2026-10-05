@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/yahoo-finance/:match*",
+      "destination": "https://query2.finance.yahoo.com/:match*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
