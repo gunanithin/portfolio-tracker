@@ -96,10 +96,13 @@ const Sidebar = ({ theme, toggleTheme }) => {
 
   return (
     <div className="sidebar">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="heading-gradient" style={{ fontSize: '1.5rem', marginBottom: '4px' }}>PortfoTrack</h2>
-          <p className="text-muted" style={{ fontSize: '0.8rem' }}>Secure Wealth Manager</p>
+      <div className="flex justify-between items-start">
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="PortfoTrack Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
+          <div>
+            <h2 className="heading-gradient" style={{ fontSize: '1.5rem', marginBottom: '4px' }}>PortfoTrack</h2>
+            <p className="text-muted" style={{ fontSize: '0.8rem' }}>Secure Wealth Manager</p>
+          </div>
         </div>
         <button className="btn-icon" onClick={toggleTheme}>
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}

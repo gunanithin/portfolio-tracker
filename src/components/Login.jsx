@@ -68,13 +68,8 @@ const Login = ({ theme, toggleTheme }) => {
 
       <div className="glass-panel" style={{ width: '100%', maxWidth: '420px', padding: '40px' }}>
         <div className="flex flex-col items-center mb-8 text-center">
-          <div style={{
-            background: 'rgba(56, 189, 248, 0.1)',
-            padding: '16px',
-            borderRadius: '24px',
-            marginBottom: '20px'
-          }}>
-            <ShieldCheck size={40} color="var(--accent)" />
+          <div style={{ marginBottom: '20px' }}>
+            <img src="/logo.png" alt="PortfoTrack Logo" style={{ width: '80px', height: '80px', borderRadius: '20px', boxShadow: '0 8px 16px rgba(0,0,0,0.2)' }} />
           </div>
           <h2 className="heading-gradient" style={{ fontSize: '2rem', marginBottom: '8px' }}>PortfoTrack</h2>
           <p className="text-muted">{isSignUp ? 'Create your secure account' : 'Secure Wealth Management'}</p>
