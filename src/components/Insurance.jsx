@@ -6,7 +6,7 @@ import { db, storage } from '../firebase';
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { encryptData, decryptData, encryptFileBase64, decryptFileBase64 } from '../utils/encryption';
-import { Shield, Plus, ShieldCheck, HeartPulse, Car, Home, Trash2, Edit2, FileText, Download } from 'lucide-react';
+import { Shield, Plus, ShieldCheck, HeartPulse, Car, Home, Trash2, Edit2, FileText, Download, Eye, EyeOff } from 'lucide-react';
 
 const Insurance = () => {
   const { currentUser } = useAuth();
@@ -16,6 +16,7 @@ const Insurance = () => {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showFigures, setShowFigures] = useState(false);
   const [editingPolicyId, setEditingPolicyId] = useState(null);
 
   // Form State
@@ -224,12 +225,22 @@ const Insurance = () => {
 
       <div className="dashboard-grid mb-8">
         <div className="glass-panel col-span-6">
-          <p className="text-muted mb-2">Total Cover</p>
-          <h2 style={{ fontSize: '1.8rem' }}>{formatCurrency(totalCover)}</h2>
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-muted m-0">Total Cover</p>
+            <button onClick={() => setShowFigures(!showFigures)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex' }} title="Toggle visibility">
+              {showFigures ? <EyeOff size={14} /> : <Eye size={14} />}
+            </button>
+          </div>
+          <h2 style={{ fontSize: '1.8rem' }}>{showFigures ? formatCurrency(totalCover) : '********'}</h2>
         </div>
         <div className="glass-panel col-span-6">
-          <p className="text-muted mb-2">Total Annual Premium</p>
-          <h2 style={{ fontSize: '1.8rem' }}>{formatCurrency(totalPremium)}</h2>
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-muted m-0">Total Annual Premium</p>
+            <button onClick={() => setShowFigures(!showFigures)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex' }} title="Toggle visibility">
+              {showFigures ? <EyeOff size={14} /> : <Eye size={14} />}
+            </button>
+          </div>
+          <h2 style={{ fontSize: '1.8rem' }}>{showFigures ? formatCurrency(totalPremium) : '********'}</h2>
         </div>
       </div>
 
@@ -277,11 +288,11 @@ const Insurance = () => {
               <div style={{ background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
                   <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '4px' }}>Cover Amount</p>
-                  <p style={{ fontWeight: 600 }}>{formatCurrency(policy.coverAmount)}</p>
+                  <p style={{ fontWeight: 600 }}>{showFigures ? formatCurrency(policy.coverAmount) : '********'}</p>
                 </div>
                 <div>
                   <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '4px' }}>Annual Premium</p>
-                  <p style={{ fontWeight: 600 }}>{formatCurrency(policy.premiumAmount)}</p>
+                  <p style={{ fontWeight: 600 }}>{showFigures ? formatCurrency(policy.premiumAmount) : '********'}</p>
                 </div>
                 {policy.renewalDate && (
                   <div style={{ gridColumn: 'span 2' }}>
