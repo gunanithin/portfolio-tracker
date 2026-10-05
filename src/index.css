@@ -98,6 +98,51 @@ h1, h2, h3, h4 {
   transition: color 0.4s ease;
 }
 
+/* Modals & Forms */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
 /* Buttons */
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), #2563eb);
@@ -114,6 +159,22 @@ h1, h2, h3, h4 {
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--panel-border);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-muted);
 }
 
 .btn-google {
@@ -231,11 +292,25 @@ h1, h2, h3, h4 {
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
 .gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
 .gap-4 { gap: 16px; }
 .mb-2 { margin-bottom: 8px; }
 .mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
+.w-full { width: 100%; }
+.block { display: block; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+
+.sortable-header {
+  transition: color 0.2s ease;
+}
+.sortable-header:hover {
+  color: var(--text-primary);
+}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

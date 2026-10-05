@@ -62,6 +62,7 @@ const VaultUnlock = () => {
               inputMode="numeric"
               placeholder="Enter 4-Digit PIN" 
               value={pin}
+              autoFocus
               onChange={(e) => {
                 const val = e.target.value;
                 if (/^\d{0,4}$/.test(val)) {

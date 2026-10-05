@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } f
 import { LayoutDashboard, Wallet, Shield, Settings as SettingsIcon, LogOut, ArrowRightLeft, Sun, Moon } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Investments from './components/Investments';
+import Transactions from './components/Transactions';
 import Insurance from './components/Insurance';
 import Settings from './components/Settings';
 import Login from './components/Login';
@@ -168,7 +169,7 @@ const AppContent = () => {
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/investments" element={<Investments />} />
-                  <Route path="/transactions" element={<div className="glass-panel"><h2>Transactions (Coming Soon)</h2></div>} />
+                  <Route path="/transactions" element={<Transactions />} />
                   <Route path="/insurance" element={<Insurance />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
