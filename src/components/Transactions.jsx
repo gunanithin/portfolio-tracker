@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useVault } from '../context/VaultContext';
+import { useDialog } from '../context/DialogContext';
 import { db } from '../firebase';
 import { collection, query, where, onSnapshot, writeBatch, doc, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { encryptData, decryptData } from '../utils/encryption';
@@ -12,6 +13,7 @@ import autoTable from 'jspdf-autotable';
 const Transactions = () => {
   const { currentUser } = useAuth();
   const { vaultPin } = useVault();
+  const { showAlert, showConfirm } = useDialog();
   
   const [investments, setInvestments] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -117,7 +119,7 @@ const Transactions = () => {
       } else if (txType === 'Sell') {
         const newQuantity = asset.quantity - qtyNum;
         if (newQuantity < 0) {
-          alert("You cannot sell more shares than you own!");
+          showAlert("Invalid Quantity", "You cannot sell more shares than you own!");
           setIsSubmitting(false);
           return;
         }
@@ -150,18 +152,22 @@ const Transactions = () => {
       resetForm();
     } catch (err) {
       console.error("Error saving transaction", err);
-      alert("Failed to save transaction securely.");
+      showAlert("Encryption Error", "Failed to save transaction securely.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeleteTransaction = async (id) => {
+  const handleDeleteTransaction = (id) => {
     // Note: In a robust app, deleting a transaction would ideally reverse the math on the asset.
     // For simplicity, we just delete the log here.
-    if (window.confirm("Are you sure you want to delete this transaction log? (This will NOT undo the quantity changes on the asset)")) {
-      await deleteDoc(doc(db, 'transactions', id));
-    }
+    showConfirm(
+      "Delete Transaction Log",
+      "Are you sure you want to delete this transaction log? (This will NOT undo the quantity changes on the asset)",
+      async () => {
+        await deleteDoc(doc(db, 'transactions', id));
+      }
+    );
   };
 
   const handleSort = (key) => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useVault } from '../context/VaultContext';
 import { useSettings } from '../context/SettingsContext';
+import { useDialog } from '../context/DialogContext';
 import { db, storage } from '../firebase';
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
@@ -12,6 +13,7 @@ const Insurance = () => {
   const { currentUser } = useAuth();
   const { vaultPin } = useVault();
   const { formatCurrency } = useSettings();
+  const { showAlert, showConfirm } = useDialog();
   
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +109,7 @@ const Insurance = () => {
       resetForm();
     } catch (error) {
       console.error("Error saving policy:", error);
-      alert("Failed to save policy securely.");
+      showAlert("Encryption Error", "Failed to save policy securely.");
     } finally {
       setIsSubmitting(false);
     }
@@ -118,7 +120,7 @@ const Insurance = () => {
     if (!file) return;
     
     if (file.size > 5 * 1024 * 1024) {
-      alert("File is too large! Please select a PDF under 5MB.");
+      showAlert("File Limit Exceeded", "File is too large! Please select a PDF under 5MB.");
       return;
     }
 
@@ -148,16 +150,20 @@ const Insurance = () => {
       a.click();
     } catch (err) {
       console.error("Failed to decrypt and download file", err);
-      alert("Failed to decrypt document. It may be corrupted or require the original Vault PIN.");
+      showAlert("Decryption Failed", "Failed to decrypt document. It may be corrupted or require the original Vault PIN.");
     } finally {
       setDownloadingId(null);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this policy from your Vault?')) {
-      await deleteDoc(doc(db, 'insurance', id));
-    }
+  const handleDelete = (id) => {
+    showConfirm(
+      "Delete Policy",
+      "Are you sure you want to delete this policy from your Vault?",
+      async () => {
+        await deleteDoc(doc(db, 'insurance', id));
+      }
+    );
   };
 
   const openEditModal = (policy) => {

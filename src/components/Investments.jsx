@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useVault } from '../context/VaultContext';
 import { useSettings } from '../context/SettingsContext';
+import { useDialog } from '../context/DialogContext';
 import { db } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { encryptData, decryptData } from '../utils/encryption';
@@ -13,6 +14,7 @@ const Investments = () => {
   const { currentUser } = useAuth();
   const { vaultPin } = useVault();
   const { formatCurrency, currency } = useSettings();
+  const { showAlert, showConfirm } = useDialog();
   const [investments, setInvestments] = useState([]);
   const [livePrices, setLivePrices] = useState({});
   const [loading, setLoading] = useState(true);
@@ -198,7 +200,7 @@ const Investments = () => {
       setPurchasePrice('');
     } catch (err) {
       console.error("Failed to save asset", err);
-      alert("Error saving asset. Check console.");
+      showAlert("Encryption Error", "Error saving asset. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -228,14 +230,18 @@ const Investments = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if(window.confirm('Are you sure you want to delete this asset?')) {
-      try {
-        await deleteDoc(doc(db, 'investments', id));
-      } catch (err) {
-        console.error("Error deleting", err);
+  const handleDelete = (id) => {
+    showConfirm(
+      "Delete Asset",
+      "Are you sure you want to delete this asset?",
+      async () => {
+        try {
+          await deleteDoc(doc(db, 'investments', id));
+        } catch (err) {
+          console.error("Error deleting", err);
+        }
       }
-    }
+    );
   };
 
   // Calculate Total Value (assuming current price == purchase price for MVP)

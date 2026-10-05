@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { VaultProvider } from './context/VaultContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
+import { DialogProvider } from './context/DialogContext';
 import VaultGuard from './components/VaultGuard';
 
 const CurrencySelector = () => {
@@ -217,7 +218,9 @@ function App() {
       <AuthProvider>
         <SettingsProvider>
           <VaultProvider>
-            <AppContent />
+            <DialogProvider>
+              <AppContent />
+            </DialogProvider>
           </VaultProvider>
         </SettingsProvider>
       </AuthProvider>
