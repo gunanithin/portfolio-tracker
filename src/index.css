@@ -252,6 +252,11 @@ h1, h2, h3, h4 {
   overflow-y: auto;
 }
 
+.main-content > div {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -329,33 +334,109 @@ h1, h2, h3, h4 {
 }
 
 /* Responsive Design */
+.mobile-header { display: none; }
+.sidebar-overlay { display: none; }
+.mobile-close-btn { display: none !important; }
+.desktop-theme-btn { display: flex; }
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  
+  .col-span-3 {
+    grid-column: span 6 !important;
+  }
+  
+  .col-span-6 {
+    grid-column: span 12 !important;
+  }
+  
+  .sidebar {
+    width: 220px; /* Slightly narrower sidebar on tablets */
+  }
+}
+
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
   }
-  .sidebar {
-    width: 100%;
-    border-right: none;
+  
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--panel-border);
-    padding: 16px;
-    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 40;
   }
-  .sidebar nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 8px;
+  
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 50;
+    border-right: 1px solid var(--panel-border);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .nav-item {
-    white-space: nowrap;
+  
+  .sidebar.open {
+    left: 0;
   }
+  
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+    z-index: 45;
+  }
+
+  .mobile-close-btn { display: flex !important; }
+  .desktop-theme-btn { display: none !important; }
+
   .main-content {
-    padding: 16px;
+    padding: 20px 16px;
   }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  .col-span-12, .col-span-8, .col-span-4, .col-span-6, .col-span-3 {
-    grid-column: span 1;
+  
+  .col-span-12, .col-span-8, .col-span-6, .col-span-4, .col-span-3, .col-span-2 {
+    grid-column: span 1 / -1 !important;
+  }
+  
+  .flex.justify-between.items-center {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .glass-panel {
+    padding: 20px 16px;
+  }
+
+  /* Make filter pills horizontal scroll */
+  .flex.gap-2.mb-4, .flex.gap-2.mb-6 {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .flex.gap-2.mb-4::-webkit-scrollbar, .flex.gap-2.mb-6::-webkit-scrollbar {
+    display: none;
   }
 }

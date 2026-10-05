@@ -368,7 +368,8 @@ const Transactions = () => {
         </div>
       ) : (
         <div className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <div className="table-responsive-wrapper">
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                 <th style={{ padding: '16px 24px', fontWeight: '500', cursor: 'pointer' }} className="text-muted sortable-header" onClick={() => handleSort('date')}>Date <SortIcon columnKey="date" /></th>
@@ -423,7 +424,8 @@ const Transactions = () => {
                 ))
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
 

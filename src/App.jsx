@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, Shield, Settings as SettingsIcon, LogOut, ArrowRightLeft, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Wallet, Shield, Settings as SettingsIcon, LogOut, ArrowRightLeft, Sun, Moon, Menu, X } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Investments from './components/Investments';
 import Transactions from './components/Transactions';
@@ -82,7 +82,7 @@ const CurrencySelector = () => {
   );
 };
 
-const Sidebar = ({ theme, toggleTheme }) => {
+const Sidebar = ({ theme, toggleTheme, isMobileOpen, setIsMobileOpen }) => {
   const location = useLocation();
   const { currentUser, logout } = useAuth();
   const { currency, setCurrency } = useSettings();
@@ -96,7 +96,7 @@ const Sidebar = ({ theme, toggleTheme }) => {
   ];
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isMobileOpen ? 'open' : ''}`}>
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="PortfoTrack Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
@@ -105,9 +105,14 @@ const Sidebar = ({ theme, toggleTheme }) => {
             <p className="text-muted" style={{ fontSize: '0.8rem' }}>Secure Wealth Manager</p>
           </div>
         </div>
-        <button className="btn-icon" onClick={toggleTheme}>
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        <div className="flex gap-2">
+          <button className="btn-icon mobile-close-btn" onClick={() => setIsMobileOpen(false)}>
+            <X size={20} />
+          </button>
+          <button className="btn-icon desktop-theme-btn" onClick={toggleTheme}>
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
       </div>
 
       <nav className="flex flex-col gap-2" style={{ marginTop: '24px' }}>
@@ -115,6 +120,7 @@ const Sidebar = ({ theme, toggleTheme }) => {
           <Link
             key={item.path}
             to={item.path}
+            onClick={() => setIsMobileOpen(false)}
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
           >
             {item.icon}
@@ -148,6 +154,7 @@ const Sidebar = ({ theme, toggleTheme }) => {
 
 const AppContent = () => {
   const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'light');
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -164,7 +171,28 @@ const AppContent = () => {
       <Route path="/*" element={
         <ProtectedRoute>
           <div className="app-container">
-            <Sidebar theme={theme} toggleTheme={toggleTheme} />
+            {/* Mobile Header */}
+            <div className="mobile-header">
+              <div className="flex items-center gap-3">
+                <img src="/logo.png" alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
+                <h2 className="heading-gradient" style={{ fontSize: '1.2rem' }}>PortfoTrack</h2>
+              </div>
+              <div className="flex gap-2">
+                <button className="btn-icon" onClick={toggleTheme} style={{ width: '36px', height: '36px' }}>
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button className="btn-icon" onClick={() => setIsMobileOpen(true)} style={{ width: '36px', height: '36px' }}>
+                  <Menu size={18} />
+                </button>
+              </div>
+            </div>
+
+            <Sidebar theme={theme} toggleTheme={toggleTheme} isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
+            
+            {isMobileOpen && (
+              <div className="sidebar-overlay" onClick={() => setIsMobileOpen(false)}></div>
+            )}
+            
             <main className="main-content">
               <VaultGuard>
                 <Routes>
