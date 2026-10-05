@@ -50,7 +50,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? (
+        <div style={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'var(--bg-color)' }}>
+          <div className="loading-spinner" style={{ width: '40px', height: '40px', marginBottom: '24px' }}></div>
+          <h2 className="heading-gradient" style={{ fontSize: '1.5rem', marginBottom: '8px' }}>Portfolio Vault</h2>
+          <p className="text-muted" style={{ fontSize: '0.9rem', opacity: 0.7 }}>Securing your session...</p>
+        </div>
+      ) : children}
     </AuthContext.Provider>
   );
 };

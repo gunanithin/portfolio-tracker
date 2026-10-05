@@ -303,6 +303,16 @@ const Investments = () => {
     return sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
   };
 
+  if (loading) {
+    return (
+      <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="loading-spinner" style={{ width: '40px', height: '40px', marginBottom: '24px' }}></div>
+        <h2 className="heading-gradient" style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Loading Vault...</h2>
+        <p className="text-muted" style={{ fontSize: '0.9rem', opacity: 0.7 }}>Decrypting your investments</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '24px', width: '100%' }}>
       <div className="flex justify-between items-center" style={{ marginBottom: '32px' }}>

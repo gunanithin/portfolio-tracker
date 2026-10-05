@@ -147,10 +147,11 @@ const Sidebar = ({ theme, toggleTheme }) => {
 };
 
 const AppContent = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'light');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

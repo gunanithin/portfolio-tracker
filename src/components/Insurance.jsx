@@ -199,6 +199,16 @@ const Insurance = () => {
   const totalCover = policies.reduce((sum, p) => sum + p.coverAmount, 0);
   const totalPremium = policies.reduce((sum, p) => sum + p.premiumAmount, 0);
 
+  if (loading) {
+    return (
+      <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="loading-spinner" style={{ width: '40px', height: '40px', marginBottom: '24px' }}></div>
+        <h2 className="heading-gradient" style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Loading Insurance...</h2>
+        <p className="text-muted" style={{ fontSize: '0.9rem', opacity: 0.7 }}>Fetching your active policies</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -215,17 +225,15 @@ const Insurance = () => {
       <div className="dashboard-grid mb-8">
         <div className="glass-panel col-span-6">
           <p className="text-muted mb-2">Total Cover</p>
-          <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : formatCurrency(totalCover)}</h2>
+          <h2 style={{ fontSize: '1.8rem' }}>{formatCurrency(totalCover)}</h2>
         </div>
         <div className="glass-panel col-span-6">
           <p className="text-muted mb-2">Total Annual Premium</p>
-          <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : formatCurrency(totalPremium)}</h2>
+          <h2 style={{ fontSize: '1.8rem' }}>{formatCurrency(totalPremium)}</h2>
         </div>
       </div>
 
-      {loading ? (
-        <div className="glass-panel text-center p-8">Loading encrypted policies...</div>
-      ) : policies.length === 0 ? (
+      {policies.length === 0 ? (
         <div className="glass-panel text-center p-8">
           <Shield size={48} color="rgba(255,255,255,0.2)" style={{ margin: '0 auto 16px' }} />
           <p className="text-muted mb-4">No insurance policies found in your vault.</p>

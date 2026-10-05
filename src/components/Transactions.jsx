@@ -267,6 +267,16 @@ const Transactions = () => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val);
   };
 
+  if (loading) {
+    return (
+      <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="loading-spinner" style={{ width: '40px', height: '40px', marginBottom: '24px' }}></div>
+        <h2 className="heading-gradient" style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Loading Ledger...</h2>
+        <p className="text-muted" style={{ fontSize: '0.9rem', opacity: 0.7 }}>Fetching transaction history</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -280,7 +290,7 @@ const Transactions = () => {
         </button>
       </div>
 
-      {!loading && transactions.length > 0 && (
+      {transactions.length > 0 && (
         <div className="mb-6 flex flex-col gap-4">
           <div className="flex justify-between items-center flex-wrap gap-4 glass-panel" style={{ padding: '16px 20px', borderRadius: '12px' }}>
             
@@ -350,9 +360,7 @@ const Transactions = () => {
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center my-12"><div className="loading-spinner"></div></div>
-      ) : transactions.length === 0 ? (
+      {transactions.length === 0 ? (
         <div className="glass-panel text-center py-12">
           <ArrowRightLeft size={48} color="var(--text-muted)" style={{ margin: '0 auto', marginBottom: '16px', opacity: 0.5 }} />
           <h3>No Transactions Logged</h3>
