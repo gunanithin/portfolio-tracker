@@ -18,7 +18,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { ArrowUpRight, TrendingUp, Shield, Wallet, Eye, EyeOff } from 'lucide-react';
+import { ArrowUpRight, TrendingUp, Shield, Wallet, Eye, EyeOff, HeartPulse } from 'lucide-react';
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +42,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [fetchingPrices, setFetchingPrices] = useState(false);
   const [showFigures, setShowFigures] = useState(false);
+  const [insurancePolicies, setInsurancePolicies] = useState([]);
 
   useEffect(() => {
     if (!currentUser || !vaultPin) return;
@@ -74,14 +75,28 @@ const Dashboard = () => {
         } catch(e) {}
       });
       
-      // Sort chronologically
       loadedSnaps.sort((a, b) => new Date(a.date) - new Date(b.date));
       setSnapshots(loadedSnaps);
+    });
+
+    const qInsurance = query(collection(db, 'insurance'), where('userId', '==', currentUser.uid));
+    const unsubscribeInsurance = onSnapshot(qInsurance, (snapshot) => {
+      const loadedPolicies = [];
+      snapshot.forEach((docSnap) => {
+        try {
+          const encryptedData = docSnap.data().data;
+          const decryptedStr = decryptData(encryptedData, vaultPin);
+          const policyData = JSON.parse(decryptedStr);
+          loadedPolicies.push({ id: docSnap.id, ...policyData });
+        } catch (error) {}
+      });
+      setInsurancePolicies(loadedPolicies);
     });
 
     return () => {
       unsubscribe();
       unsubscribeSnapshots();
+      unsubscribeInsurance();
     };
   }, [currentUser, vaultPin]);
 
@@ -228,6 +243,9 @@ const Dashboard = () => {
     }
   };
 
+  const lifeCover = insurancePolicies.filter(p => p.type === 'Term Life').reduce((sum, p) => sum + p.coverAmount, 0);
+  const healthCover = insurancePolicies.filter(p => p.type === 'Health').reduce((sum, p) => sum + p.coverAmount, 0);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -243,54 +261,69 @@ const Dashboard = () => {
 
       {/* Top Stats Cards */}
       <div className="dashboard-grid mb-8">
-        <div className="glass-panel col-span-4">
-          <div className="flex items-center gap-4 mb-4">
+        <div className="glass-panel col-span-3">
+          <div className="flex items-center gap-3 mb-4">
             <div style={{ background: 'rgba(56,189,248,0.1)', padding: '12px', borderRadius: '12px' }}>
-              <Wallet size={24} color="#38bdf8" />
+              <Wallet size={20} color="#38bdf8" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-muted">Total Net Worth {fetchingPrices && <span style={{fontSize:'0.6rem', color:'var(--accent)'}}> (Live Syncing...)</span>}</p>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>Total Net Worth {fetchingPrices && <span style={{fontSize:'0.6rem', color:'var(--accent)'}}> (Live)</span>}</p>
                 <button onClick={() => setShowFigures(!showFigures)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex' }} title="Toggle visibility">
-                  {showFigures ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showFigures ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
-              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : showFigures ? formatCurrency(totalNetWorth) : '********'}</h2>
+              <h2 style={{ fontSize: '1.4rem' }}>{loading ? '...' : showFigures ? formatCurrency(totalNetWorth) : '********'}</h2>
             </div>
           </div>
-          <p style={{ color: totalProfit >= 0 ? 'var(--success)' : 'var(--danger)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            {totalProfit >= 0 ? <TrendingUp size={16} /> : <TrendingUp size={16} style={{transform: 'rotate(180deg)'}} />} 
-            <span>All-Time Returns: {showFigures ? `${totalProfit >= 0 ? '+' : ''}${formatCurrency(totalProfit)} (${profitPercentage.toFixed(2)}%)` : '********'}</span>
+          <p style={{ color: totalProfit >= 0 ? 'var(--success)' : 'var(--danger)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {totalProfit >= 0 ? <TrendingUp size={14} /> : <TrendingUp size={14} style={{transform: 'rotate(180deg)'}} />} 
+            <span>{showFigures ? `${totalProfit >= 0 ? '+' : ''}${formatCurrency(totalProfit)}` : '********'}</span>
           </p>
         </div>
 
-        <div className="glass-panel col-span-4">
-          <div className="flex items-center gap-4 mb-4">
+        <div className="glass-panel col-span-3">
+          <div className="flex items-center gap-3 mb-4">
             <div style={{ background: 'rgba(168,83,186,0.1)', padding: '12px', borderRadius: '12px' }}>
-              <TrendingUp size={24} color="#a853ba" />
+              <TrendingUp size={20} color="#a853ba" />
             </div>
             <div>
-              <p className="text-muted">Total Assets</p>
-              <h2 style={{ fontSize: '1.8rem' }}>{loading ? '...' : showFigures ? investments.length : '***'}</h2>
+              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Total Assets</p>
+              <h2 style={{ fontSize: '1.4rem' }}>{loading ? '...' : showFigures ? investments.length : '***'}</h2>
             </div>
           </div>
-          <p className="text-muted" style={{ fontSize: '0.9rem' }}>
-            Across all asset classes
+          <p className="text-muted" style={{ fontSize: '0.8rem' }}>
+            Active Investments
           </p>
         </div>
 
-        <div className="glass-panel col-span-4">
-          <div className="flex items-center gap-4 mb-4">
-            <div style={{ background: 'rgba(16,185,129,0.1)', padding: '12px', borderRadius: '12px' }}>
-              <Shield size={24} color="#10b981" />
+        <div className="glass-panel col-span-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div style={{ background: 'rgba(56,189,248,0.1)', padding: '12px', borderRadius: '12px' }}>
+              <Shield size={20} color="#38bdf8" />
             </div>
             <div>
-              <p className="text-muted">Insurance Cover</p>
-              <h2 style={{ fontSize: '1.8rem' }}>{showFigures ? '₹ 1.5 Cr' : '********'}</h2>
+              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Life Cover</p>
+              <h2 style={{ fontSize: '1.4rem' }}>{loading ? '...' : showFigures ? formatCurrency(lifeCover) : '********'}</h2>
             </div>
           </div>
-          <p className="text-muted" style={{ fontSize: '0.9rem' }}>
-            Life & Health (Family)
+          <p className="text-muted" style={{ fontSize: '0.8rem' }}>
+            Term Life Protection
+          </p>
+        </div>
+
+        <div className="glass-panel col-span-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div style={{ background: 'rgba(16,185,129,0.1)', padding: '12px', borderRadius: '12px' }}>
+              <HeartPulse size={20} color="#10b981" />
+            </div>
+            <div>
+              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Health Cover</p>
+              <h2 style={{ fontSize: '1.4rem' }}>{loading ? '...' : showFigures ? formatCurrency(healthCover) : '********'}</h2>
+            </div>
+          </div>
+          <p className="text-muted" style={{ fontSize: '0.8rem' }}>
+            Medical & Health
           </p>
         </div>
       </div>

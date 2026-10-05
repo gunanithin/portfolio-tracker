@@ -40,3 +40,24 @@ export const decryptData = (ciphertext, vaultPin) => {
     throw new Error("Failed to decrypt data. Invalid PIN.");
   }
 };
+
+/**
+ * Encrypts a Base64 data URL (like a PDF file) using the user's Vault PIN.
+ */
+export const encryptFileBase64 = (base64Str, vaultPin) => {
+  if (!vaultPin) throw new Error("Vault PIN is required for file encryption.");
+  return CryptoJS.AES.encrypt(base64Str, vaultPin).toString();
+};
+
+/**
+ * Decrypts a secure AES string back into a Base64 data URL.
+ */
+export const decryptFileBase64 = (ciphertext, vaultPin) => {
+  if (!vaultPin) throw new Error("Vault PIN is required for file decryption.");
+  const bytes = CryptoJS.AES.decrypt(ciphertext, vaultPin);
+  const decryptedBase64 = bytes.toString(CryptoJS.enc.Utf8);
+  if (!decryptedBase64) {
+    throw new Error("Invalid Vault PIN or corrupted file.");
+  }
+  return decryptedBase64;
+};
