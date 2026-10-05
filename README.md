@@ -1,41 +1,66 @@
 # Portfolio Vault 🛡️
 
-Welcome to **Portfolio Vault**, a military-grade, privacy-first wealth tracker. 
-
-Most portfolio trackers store your financial data in plaintext on their servers, meaning anyone with database access can see exactly how much money you have and where it's invested. **Portfolio Vault is different.** It is designed around a strictly confidential "Vault" architecture where *you* hold the only key.
-
-## 🔐 The Vault & Zero-Knowledge Security
-
-I believe your financial data is your absolute private business. 
-
-- **End-to-End AES-GCM Encryption:** When you add an asset to your Vault, all sensitive information (asset names, holdings, quantities, purchase prices) is instantly encrypted *inside your browser* before it ever leaves your device.
-- **Your Master PIN:** You secure your Vault with a custom 6-digit Master PIN. This PIN acts as your decryption key.
-- **Zero-Knowledge Architecture:** Your Master PIN is **never** sent to the cloud. The database stores only mathematically unbreakable ciphertext. Even if the server was completely compromised, your financial data would remain completely unreadable. 
-- **Absolute Privacy:** No one can see your net worth, no one can see what stocks you own, and your data remains strictly yours. 
+**Portfolio Vault** is a sleek, privacy-first, military-grade wealth tracker and transaction ledger. 
+It encrypts your financial data directly in your browser before it ever reaches the cloud, ensuring absolute zero-knowledge privacy.
 
 ## ✨ Key Features
+
+### 🔐 Zero-Knowledge Security & Auto-Lock
+- **End-to-End AES-GCM Encryption:** All sensitive data (asset names, quantities, prices, transaction logs) is encrypted locally using the Web Crypto API.
+- **Zero-Knowledge Architecture:** Your Master PIN is never sent to the cloud. Even if the database is compromised, your financial data is mathematically unreadable.
+- **Session Auto-Lock:** The vault actively monitors your interactions. If the app is left completely idle for 1 minute, it instantly purges the decryption key from memory and throws you back to the lock screen.
+
 ### 📈 Live Market Sync
-Stop manually updating your spreadsheet. Portfolio Vault integrates directly with the live Yahoo Finance API to automatically sync the latest prices for your Stocks, ETFs, Mutual Funds, and Cryptocurrencies. 
+- **Live Price Integration:** Automatically fetches live, real-time market prices for Stocks, ETFs, Mutual Funds, and Cryptocurrencies, saving you from manual spreadsheet updates.
+- **Multi-Asset Support:** Seamlessly track Equities, Crypto, and Fixed Value Assets (Real Estate, PPF, NPS) all in one unified dashboard.
 
-### 🏛️ Complete Asset Support
-Your net worth is more than just stocks. Portfolio Vault natively supports:
-- **Equities:** Indian & Global Stocks, ETFs, and Mutual Funds
-- **Crypto:** All major cryptocurrencies
-- **Fixed Value Assets:** Real Estate, Public Provident Fund (PPF), and National Pension System (NPS)
+### 📜 Comprehensive Transaction Ledger
+- **Chronological History:** Log every Buy, Sell, and Dividend payout with ease.
+- **Smart Filtering & Searching:** Instantly filter your ledger using quick-toggle pills (`Buy`, `Sell`, `Dividend`) and a global live-search text box.
+- **Interactive Sorting:** Clickable headers allow you to intuitively sort by Date, Asset, Type, Quantity, Price, and dynamically calculated Total Value.
 
-### 📊 Intelligent Dashboards
-Gain immediate insights into your wealth with our interactive dashboards:
-- **Net Worth Trend:** Track your historical wealth growth.
-- **Asset Allocation:** Visualize your exact portfolio distribution with interactive, auto-calculated percentage breakdowns.
-- **Dynamic Grouping:** Organize your vault effortlessly with our intelligent accordion layout, grouped precisely by asset type.
+### 🖨️ Professional PDF Exports
+- Generate beautiful, structured PDF reports of your transaction ledger.
+- PDFs are dynamically generated based on your active UI filters (e.g., specific date ranges, asset searches) allowing you to easily reconcile against your monthly broker statements.
 
-## 🚀 How to Use
+### 📊 Interactive Dashboards
+- **Net Worth Trend Line:** Visualize your historical wealth growth.
+- **Asset Allocation Chart:** Beautiful auto-calculated pie charts breaking down your portfolio distribution.
 
-1. **Sign In:** Create a secure account to begin.
-2. **Set Your Master PIN:** Choose a strong, memorized 6-digit PIN. **Do not lose this PIN.** Because of our Zero-Knowledge architecture, losing your PIN means permanently losing access to your decrypted vault data.
-3. **Add Assets:** Click **Add Asset** from the dashboard. For live assets (Stocks, Crypto, Mutual Funds), just search the ticker and the system will auto-populate the data. For fixed assets (PPF, NPS, Real Estate), simply enter your current balance.
-4. **Track & Grow:** Sit back and let Portfolio Vault track your live market fluctuations and visualize your true net worth in real-time.
+## 🛠️ Technology Stack
+
+**Frontend / UI:**
+- **React.js (Vite)**
+- **Tailwind CSS** (for rapid structural layouts)
+- **Vanilla CSS** (for a sleek, custom dark-mode aesthetic, premium glassmorphism, and dynamic UI micro-animations)
+- **Lucide React** (for modern, crisp iconography)
+- **Recharts** (for interactive data visualization)
+
+**Backend / Cloud:**
+- **Firebase Authentication** (Google sign-in and user management)
+- **Firebase Firestore** (NoSQL real-time database)
+
+**Security & Utilities:**
+- **Web Crypto API** (Browser-native AES-GCM 256-bit encryption)
+- **jsPDF & jspdf-autotable** (Client-side PDF generation engine)
+- **date-fns** (Date manipulation and formatting)
+
+## 🚀 Getting Started
+
+1. **Clone the repository:** 
+   ```bash
+   git clone https://github.com/gunanithin/portfolio-tracker.git
+   ```
+2. **Install dependencies:** 
+   ```bash
+   npm install
+   ```
+3. **Configure Firebase:** 
+   Ensure you have a Firebase project set up and add your configuration to `src/firebase.js`.
+4. **Run the local dev server:** 
+   ```bash
+   npm run dev
+   ```
 
 ---
 *Built with React, Firebase, and impenetrable AES-GCM encryption.*
-# portfolio-tracker
